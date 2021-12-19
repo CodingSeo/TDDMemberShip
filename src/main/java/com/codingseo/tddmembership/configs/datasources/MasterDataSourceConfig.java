@@ -15,7 +15,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableJpaRepositories(
-        basePackages = "com.codingseo.tddmembership.repositories.sub",
+        basePackages = "com.codingseo.tddmembership.repositories.master",
         entityManagerFactoryRef = "masterEntityManager",
         transactionManagerRef = "masterTransactionManager"
 )
@@ -43,6 +43,8 @@ public class MasterDataSourceConfig {
     @Bean
     public LocalContainerEntityManagerFactoryBean masterEntityManager(DataSource masterDataSource){
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+        em.setPackagesToScan("com.codingseo.tddmembership.entities.master");
+        em.setPersistenceUnitName("user");
         em.setDataSource(masterDataSource);
         return em;
     }
