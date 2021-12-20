@@ -1,18 +1,24 @@
 package com.codingseo.tddmembership.configs.datasources;
 
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableJpaRepositories(
         basePackages = "com.codingseo.tddmembership.repositories.sub",
         entityManagerFactoryRef = "subEntityManager",
@@ -37,17 +43,22 @@ public class SubDataSourceConfig {
     }
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean subEntityManager(DataSource subDataSource){
+    public LocalContainerEntityManagerFactoryBean subEntityManager(DataSource subDataSource, Environment env) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setPackagesToScan("com.codingseo.tddmembership.entities.sub");
-        em.setPersistenceUnitName("membership");
         em.setDataSource(subDataSource);
+        em.setPackagesToScan(new String[]{"com.codingseo.tddmembership.entities.sub"});
+        em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+        HashMap<String, Object> properties = new HashMap<>();
+        properties.put("hibernate.hbm2ddl.auto", env.getProperty("spring.jpa.hibernate.ddl-auto"));
+        properties.put("hibernate.dialect", env.getProperty("spring.jpa.properties.hibernate.dialect"));
+        em.setJpaPropertyMap(properties);
         return em;
     }
 
     @Bean
-    public PlatformTransactionManager subTransactionManager(DataSource subDataSource){
+    public PlatformTransactionManager subTransactionManager(DataSource subDataSource, LocalContainerEntityManagerFactoryBean subEntityManager) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(subEntityManager.getObject());
         transactionManager.setDataSource(subDataSource);
         return transactionManager;
     }
