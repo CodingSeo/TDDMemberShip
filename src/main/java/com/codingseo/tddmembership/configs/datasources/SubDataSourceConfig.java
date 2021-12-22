@@ -2,11 +2,9 @@ package com.codingseo.tddmembership.configs.datasources;
 
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -26,7 +24,6 @@ import java.util.HashMap;
 )
 public class SubDataSourceConfig {
 
-    @Primary
     @Bean
     public DataSource subDataSource(
             @Value("${datasource.sub.url}") String url,
@@ -46,7 +43,7 @@ public class SubDataSourceConfig {
     public LocalContainerEntityManagerFactoryBean subEntityManager(DataSource subDataSource, Environment env) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(subDataSource);
-        em.setPackagesToScan(new String[]{"com.codingseo.tddmembership.entities.sub"});
+        em.setPackagesToScan("com.codingseo.tddmembership.entities.sub");
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         HashMap<String, Object> properties = new HashMap<>();
         properties.put("hibernate.hbm2ddl.auto", env.getProperty("spring.jpa.hibernate.ddl-auto"));

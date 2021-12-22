@@ -50,7 +50,7 @@ public class MasterDataSourceConfig {
     @Bean
     public LocalContainerEntityManagerFactoryBean masterEntityManager(DataSource masterDataSource, Environment env){
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setPackagesToScan(new String[]{"com.codingseo.tddmembership.entities.master"});
+        em.setPackagesToScan("com.codingseo.tddmembership.entities.master");
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         HashMap<String, Object> properties = new HashMap<>();
         properties.put("hibernate.hbm2ddl.auto", env.getProperty("spring.jpa.hibernate.ddl-auto"));
