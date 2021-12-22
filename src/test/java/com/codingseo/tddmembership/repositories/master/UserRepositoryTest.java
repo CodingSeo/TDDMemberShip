@@ -20,8 +20,8 @@ public class UserRepositoryTest {
     private UserRepository userRepository;
 
     @Test
-    @DisplayName("멤버쉽등록")
-    void 멤버쉽등록() {
+    @DisplayName("유저등록")
+    void 유저등록() {
         //given
         final User user = User.builder()
                 .name("userID")
@@ -37,6 +37,27 @@ public class UserRepositoryTest {
         assertThat(result.getPass()).isEqualTo(1234);
 
         //verify
+
+    }
+
+    @Test
+    @DisplayName("유저등록이후_조회")
+    void 유저등록이후_조회() {
+        //given
+        final User user = User.builder()
+                .name("userFind")
+                .pass(1234)
+                .build();
+
+        //when
+        userRepository.save(user);
+        final User findResult = userRepository.findByName("userFind");
+
+        //then
+        assertThat(findResult.getId()).isNotNull();
+        assertThat(findResult.getName()).isEqualTo("userFind");
+        assertThat(findResult.getPass()).isEqualTo(1234);
+
 
     }
 }
