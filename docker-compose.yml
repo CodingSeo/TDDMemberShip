@@ -9,7 +9,6 @@ services:
       - ./dbsetting:/etc/mysql/mysql.conf.d
     restart: always
     environment:
-      MYSQL_DATABASE: user
       MYSQL_ROOT_PASSWORD: root
     ports:
       - "4899:3306"
@@ -24,7 +23,6 @@ services:
       - ./dbsetting:/etc/mysql/mysql.conf.d
     restart: always
     environment:
-      MYSQL_DATABASE: member
       MYSQL_ROOT_PASSWORD: root
     ports:
       - "4898:3306"
