@@ -1,15 +1,21 @@
 package com.codingseo.tddmembership.repositories.sub;
 
+import com.codingseo.tddmembership.configs.datasources.MasterDataSourceConfig;
+import com.codingseo.tddmembership.configs.datasources.SubDataSourceConfig;
 import com.codingseo.tddmembership.entities.sub.MemberShip;
 import com.codingseo.tddmembership.repositories.sub.MembershipRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
+@ImportAutoConfiguration(SubDataSourceConfig.class)
 public class
 MembershipRepositoryTest {
 

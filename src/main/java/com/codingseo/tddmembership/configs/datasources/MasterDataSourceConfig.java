@@ -23,15 +23,23 @@ import java.util.HashMap;
         transactionManagerRef = "masterTransactionManager"
 )
 public class MasterDataSourceConfig {
+    @Value("${datasource.master.url}")
+    String url;
+    @Value("${datasource.master.driver-class-name}")
+    String driverClassName;
+    @Value("${datasource.master.username}")
+    String userName;
+    @Value("${datasource.master.password}")
+    String password;
+
+    @Value("${spring.jpa.hibernate.ddl-auto}")
+    String ddlAuto;
+    @Value("${spring.jpa.properties.hibernate.dialect}")
+    String dialect;
 
     @Primary
     @Bean
-    public DataSource masterDataSource(
-            @Value("${datasource.master.url}") String url,
-            @Value("${datasource.master.driver-class-name}") String driverClassName,
-            @Value("${datasource.master.username}") String userName,
-            @Value("${datasource.master.password}") String password
-    ) {
+    public DataSource masterDataSource() {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl(url);
         dataSource.setDriverClassName(driverClassName);
@@ -42,30 +50,30 @@ public class MasterDataSourceConfig {
 
     @Primary
     @Bean
-    public JdbcTemplate masterJDBCTemplate(DataSource masterDataSource){
+    public JdbcTemplate masterJDBCTemplate(DataSource masterDataSource) {
         return new JdbcTemplate(masterDataSource);
     }
 
     @Primary
     @Bean
-    public LocalContainerEntityManagerFactoryBean masterEntityManager(DataSource masterDataSource, Environment env){
+    public LocalContainerEntityManagerFactoryBean masterEntityManager() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setPackagesToScan("com.codingseo.tddmembership.entities.master");
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         HashMap<String, Object> properties = new HashMap<>();
-        properties.put("hibernate.hbm2ddl.auto", env.getProperty("spring.jpa.hibernate.ddl-auto"));
-        properties.put("hibernate.dialect", env.getProperty("spring.jpa.properties.hibernate.dialect"));
+        properties.put("hibernate.hbm2ddl.auto", ddlAuto);
+        properties.put("hibernate.dialect", dialect);
         em.setJpaPropertyMap(properties);
-        em.setDataSource(masterDataSource);
+        em.setDataSource(masterDataSource());
         return em;
     }
 
     @Primary
     @Bean
-    public PlatformTransactionManager masterTransactionManager(DataSource masterDataSource, LocalContainerEntityManagerFactoryBean masterEntityManager){
+    public PlatformTransactionManager masterTransactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(masterEntityManager.getObject());
-        transactionManager.setDataSource(masterDataSource);
+        transactionManager.setEntityManagerFactory(masterEntityManager().getObject());
+        transactionManager.setDataSource(masterDataSource());
         return transactionManager;
     }
 }
