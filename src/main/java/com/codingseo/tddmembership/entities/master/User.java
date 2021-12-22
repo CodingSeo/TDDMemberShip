@@ -8,8 +8,6 @@ import javax.persistence.Entity;
 
 @Entity
 @Getter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
     @Column(nullable = false, length = 25)
@@ -17,4 +15,10 @@ public class User extends BaseEntity {
 
     @Column(nullable = false)
     private Integer pass;
+
+    @Builder
+    public User(@NonNull String name,@NonNull Integer pass) {
+        this.name = name;
+        this.pass = pass;
+    }
 }
