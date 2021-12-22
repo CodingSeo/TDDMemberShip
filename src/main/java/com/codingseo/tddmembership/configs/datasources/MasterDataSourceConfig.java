@@ -37,7 +37,6 @@ public class MasterDataSourceConfig {
     @Value("${spring.jpa.properties.hibernate.dialect}")
     String dialect;
 
-    @Primary
     @Bean
     public DataSource masterDataSource() {
         HikariDataSource dataSource = new HikariDataSource();
@@ -48,13 +47,11 @@ public class MasterDataSourceConfig {
         return dataSource;
     }
 
-    @Primary
     @Bean
     public JdbcTemplate masterJDBCTemplate(DataSource masterDataSource) {
         return new JdbcTemplate(masterDataSource);
     }
 
-    @Primary
     @Bean
     public LocalContainerEntityManagerFactoryBean masterEntityManager() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
@@ -68,7 +65,6 @@ public class MasterDataSourceConfig {
         return em;
     }
 
-    @Primary
     @Bean
     public PlatformTransactionManager masterTransactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
